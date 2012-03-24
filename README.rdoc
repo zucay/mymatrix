@@ -23,7 +23,7 @@ ruby 1.9.2 or higher
 
 == INSTALL:
 gem install mymatrix
-
+(It's hosted on gemcutter.org)
 == LICENSE:
 
 (The MIT License)
