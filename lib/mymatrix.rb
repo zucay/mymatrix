@@ -1,17 +1,23 @@
 #!/usr/bin/ruby -Ku
 # -*- encoding: utf-8 -*-
 
+$:.unshift(File.dirname(__FILE__)) unless
+  $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
+
 require 'rubygems'
 require 'spreadsheet'
 require 'nkf'
 require 'logger'
 require 'pp'
 require 'enumerable_ex' #verbose_each
+
 if(RUBY_VERSION =~ /1\.[^9]/)
   $KCODE='UTF8'
 end
 
 class MyMatrix
+  VERSION = '0.0.1'
+
 	attr_accessor :file, :internal_lf, :mx
 	include Enumerable
 	#to_t()の際のセパレータ。
