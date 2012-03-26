@@ -1,5 +1,6 @@
 #!/usr/bin/ruby -Ku
 # -*- encoding: utf-8 -*-
+require "mymatrix/version"
 
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
@@ -16,7 +17,7 @@ if(RUBY_VERSION =~ /1\.[^9]/)
 end
 
 class MyMatrix
-  VERSION = '0.0.1'
+#  VERSION = '0.0.1'
 
 	attr_accessor :file, :internal_lf, :mx
 	include Enumerable
@@ -1232,4 +1233,5 @@ class MyRailsMatrix < MyMatrix
 		end
 	end
 end
+
 
