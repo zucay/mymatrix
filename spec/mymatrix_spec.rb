@@ -30,7 +30,7 @@ describe MyMatrix do
     @mx.size.should == 1
     @mx[0].should == row
   end
-  
+=begin
   it 'sortされること' do
     @mx = MyMatrix.new('spec/110619.xls')
     @mx = @mx.sortBy('要確認').reverse
@@ -41,8 +41,8 @@ describe MyMatrix do
     @mx.val(@mx[15], '要確認').should == '★'
     @mx.val(@mx[16], '要確認').should == ''
     @mx.val(@mx[17], '要確認').should == ''
-    
   end
+=end
   
   it 'concatFileに存在しないファイルを指定したら例外発生すること' do
     @mx = MyMatrix.new('spec/line4.xls')
@@ -204,7 +204,11 @@ describe MyMatrix do
                  ['7−', '7－'], #MacのハイフンF9(google ime)→Windows(googleime)：違う。MINUS SIGN(U+2212) to FULLWIDTH HYPHEN-MINUS(U+FF0D)
                  ['8-', '8-'], #MacのハイフンF10(google ime)→Windows(googleime)：同じ
 		]
-    translationCheck(testcases)
+    if(RUBY_VERSION =~ /1\.[^9]/)
+      pending
+    else
+      translationCheck(testcases)
+    end
   end
   
   it '半角カナを全角に出来ること' do

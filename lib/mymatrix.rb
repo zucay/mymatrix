@@ -93,11 +93,11 @@ class MyMatrix
   # ====Return
   # CP932の文字列
 	def self.tosjis(str)
-		str = MyMatrix.cp932ize(str)
 		if(RUBY_VERSION =~ /1\.[^9]/)
 			#-xは半角カナを全角にするのを抑止するオプション。
 			out = NKF.nkf('-W -x -s --cp932', str)
 		else
+      str = MyMatrix.cp932ize(str)
 			out = str.encode("Windows-31J")
 		end
 		
@@ -1097,6 +1097,7 @@ class MyMatrix
 		end
 		return self
 	end
+  #CP932範囲外の文字コードを変換する関数。ruby1.9の正規表現（鬼車）のため、1.8では使えない。
 	def self.cp932ize(str)
 		out = str.dup
 		cases = [
