@@ -71,9 +71,12 @@ class MyMatrix
   # ====Return
   # UTF8 String
 	def self.toutf8(str)
-		#out = NKF.nkf('-x -w --cp932', str)
 		#入力がShift-jisであるとする。
-		out = NKF.nkf('-S -x -w --cp932', str)
+    if(RUBY_VERSION =~ /1\.[^9]/)
+      out = NKF.nkf('-S -x -w --cp932', str)
+    else
+      out = str.encode('UTF-8')
+    end
 		return out		
 	end
 
