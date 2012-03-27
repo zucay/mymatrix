@@ -1,12 +1,13 @@
 #!/usr/bin/ruby -Ku
 # -*- encoding: utf-8 -*-
 require "mymatrix/version"
+require 'loader_factory'
+
 
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
 require 'rubygems'
-require 'spreadsheet'
 require 'nkf'
 require 'logger'
 require 'pp'
@@ -17,8 +18,6 @@ if(RUBY_VERSION =~ /1\.[^9]/)
 end
 
 class MyMatrix
-#  VERSION = '0.0.1'
-
 	attr_accessor :file, :internal_lf, :mx
 	include Enumerable
 	#to_t()の際のセパレータ。
@@ -30,19 +29,6 @@ class MyMatrix
 	# ====Return
 	# 生成されたMyMatrixオブジェクト
 	def initialize(file=nil, opts={})
-		#platform check
-		if(RUBY_PLATFORM.downcase =~ /mswin(?!ce)|mingw|cygwin|bccwin/)
-			$mymatrix_filesystem = 's'
-		elsif(RUBY_PLATFORM.downcase =~ /darwin/)
-			$mymatrix_filesystem = 'm'
-		elsif(RUBY_PLATFORM.downcase =~ /linux/)
-			$mymatrix_filesystem = 'u'
-		else
-			$mymatrix_filesystem = 'u'
-		end
-	
-	
-		
 		#内部改行コード。
 		@internal_lf = '<br>'
 		rnd = rand(9999)
@@ -57,31 +43,9 @@ class MyMatrix
 		@file  = file
 		
 		@mx = []
-		if(@file =~ /\.xls$/)
-			@mx = makeMatrixFromXLS(@file, opts)
-		elsif(@file =~ /(\.tsv|\.txt|\.TSV|\.TXT)/)
-			@mx = makeMatrixFromTSV(@file, opts)
-		elsif(@file =~ /(\.csv|\.CSV)/)
-			#opts[:sep] = ','
-			#@mx = makeMatrixFromTSV(@file, opts)
-			@mx = makeMatrixFromCSV(@file, opts)
+    @mx = LoaderFactory.load(@file, opts)
 
-#		elsif(@file =~ /\.mmx$/)
-#			readmx = Marshal.load(open(@file).read)
-#			return readmx
-		elsif(@file == nil)
-		else
-			#デフォルトはTSVで読み込むようにする。
-			@mx = makeMatrixFromTSV(@file, opts)
-		end
 
-		#@mxの末尾に空レコードが入っていたら、その空白を削除
-		while(@mx[@mx.size-1] && @mx[@mx.size-1].join == '')
-			@mx.pop
-		end
-		if(@mx.size == 0)
-			@mx = []
-		end
 		@headers = @mx.shift
 		registerMatrix
 		return self
@@ -100,8 +64,6 @@ class MyMatrix
       str = MyMatrix.cp932ize(str)
 			out = str.encode("Windows-31J")
 		end
-		
-		
 		return out
 	end
   # 外部ファイルエンコード（CP932）を内部エンコード（UTF8）に変換する
@@ -120,24 +82,6 @@ class MyMatrix
 	def self.toUtf8Mac(str)
 		out = str
 		return out
-	end
-  # ファイルオープン時、パス文字列のエンコードを変換してシステムに返却するためのメソッド
-	def encodePath(path)
-		case $mymatrix_filesystem
-		when 'u'
-			#utf8=>utf8なので何もしない
-			#path = MyMatrix.toutf8(path)
-			#path.encode('UTF-8')
-			path
-		when 's'
-			path = MyMatrix.tosjis(path)
-			#path.encode('Windows-31J')
-		when 'w'
-			path = MyMatrix.tosjis(path)
-			#path.encode('Windows-31J')
-		when 'm'
-			path = MyMatrix.toUtf8Mac(path)
-		end
 	end
 
   #--
@@ -174,113 +118,7 @@ class MyMatrix
 			end
 		end
 	end
-  # xls読み込みメソッド
-	def makeMatrixFromXLS(xlsFile, opts={})
-		if(opts)
-			offset = opts[:offset]
-		end
-		offset ||= 0
-
-		out = []
-		#todo xlsFileがなかったら作成
-		encodePath(xlsFile)
-		xl = Spreadsheet.open(encodePath(xlsFile), 'rb')
-				sheet = xl.worksheet(0)
-		rowsize = sheet.last_row_index
-		(rowsize+1-offset).times do |i|
-			row = sheet.row(i+offset)
-			orow = []
-			row.each do |ele|
-				#様々な型で値が入っている。改行も入っている
-				if(ele.class == Float)&&(ele.to_s =~ /(\d+)\.0/)
-					ele = $1
-				end
-				if(ele.class == Spreadsheet::Formula)
-					ele = ele.value
-				end
-				if(ele == nil)
-					ele = ''
-				end
-				ele = ele.to_s.gsub(/\n/, '<br>')
-				orow << ele
-			end
-			out << orow
-		end
-		
-		return out
-	end
-  #TSV: tab separated value 読み込みメソッド
-	def makeMatrixFromTSV(file, opts={:sep=>SEPARATOR, :offset=>0})
-		out = []
-    epath = encodePath(file)
-		if(!File.exist?(epath))
-			open(epath, 'w') do |fo|
-				fo.print("\n\n")
-			end
-		end
-		#fi = open(file.encode('Windows-31J'), "r:Windows-31J")
-		fi = open(encodePath(file), "r:Windows-31J")
-		if(opts[:offset])
-			opts[:offset].times do |i|
-				fi.gets
-			end
-		end
-		opts[:sep]||=SEPARATOR
-		fi.each do |line|
-			row = MyMatrix.toutf8(line).chomp.split(/#{opts[:sep]}/)
-			#「1,300台」などカンマが使われている場合、「"1,300台"」となってしまうので、カンマを無視する
-			newRow = []
-			row.each do |cell|
-				stri = cell.dup
-				stri.gsub!(/^\"(.*)\"$/, '\1')
-				#"
-				stri.gsub!(/""/, '"')
-				newRow << stri
-			end
-			out << newRow
-		end
-		fi.close
-		return out
-	end
 	
-  #CSV読み込みメソッド
-	def makeMatrixFromCSV(file, opts={:offset=>0})
-		#1.9系ではFasterCSVを使えない
-		if(RUBY_VERSION =~ /1\.[^9]/)
-			#1.8以下の場合
-			require 'fastercsv'
-			csv = FasterCSV
-		else
-			#1.9以上の場合
-			require 'csv'
-			Encoding.default_external = 'Windows-31J'
-			csv = CSV
-		end
-		out = []
-		i= 0
-		syspath = encodePath(file)
-		csv.foreach(syspath, {:row_sep => "\r\n", :encoding => 'Shift_JIS'}) do |row|
-			if(opts[:offset])
-				if(opts[:offset] < i)
-					next
-				end
-			end
-			#「1,300台」などカンマが使われている場合、「"1,300台"」となってしまうので、カンマを無視する
-			newRow = []
-			row.each do |cell|
-				cell = cell.to_s
-				cell ||= ''
-				cell = MyMatrix.toutf8(cell)
-				#cell = cell.gsub(/^\"/, "")
-				#cell = cell.gsub(/\"$/, "")
-				#"
-				newRow << cell
-			end
-			out << newRow
-			i += 1
-		end
-		return out
-	end
 
 	def isEnd(row)
 		out = true
@@ -351,6 +189,7 @@ class MyMatrix
 	end
 	alias val getValue
 =begin
+
 	def getValues(row, arr)
 		out = []
 		arr.each do |ele|
@@ -361,7 +200,9 @@ class MyMatrix
 		end
 		return out
 	end
+
 =end
+
 	def setValue(row, str, value)
 		if(!row)
 			raise 'row is nil'
@@ -532,7 +373,7 @@ class MyMatrix
 	end
 	#使い方はto_t()を参照。yield。
 	def to_text(outFile)
-		outFile = encodePath(outFile)
+		outFile = FileIO.encodePath(outFile)
 		out = []
 		out << @headers
 		@mx.each do |row|
@@ -1127,12 +968,6 @@ class MyMatrix
 		end
 		return out
 	end
-#	def save(file)
-#		p Marshal.dump(self)
-#		open(file, 'w') do |fo|
-#			fo.write(Marshal.dump(self))
-#		end
-#	end
 	
 =begin	
 	def to_xls(opts)
@@ -1193,46 +1028,6 @@ class MyMatrix
     postfix = opts[:postfix].to_s
 
 		basename = File.basename(path, ".*")
-		opath = (MyMatrix.new.encodePath("#{dir}/#{basename}_#{postfix}#{ext}"))
+		opath = (FileIO.encodePath("#{dir}/#{basename}_#{postfix}#{ext}"))
   end
 end
-
-#ruby -Ks で利用する場合。ruby1.9では使えないはず。obsolete
-class SjisMyMatrix < MyMatrix
-	def getValue(row, col)
-		col = MyMatrix.toutf8(col)
-	 MyMatrix.tosjis(super(row, col))
-	end
-	def setValue(row, col, value)
-		col = MyMatrix.toutf8(col)
-		value = MyMatrix.toutf8(value)
-		super(row, col, value)
-	end
-	def addHeaders(hs)
-		arr =[]
-		hs.each do |ele|
-			arr << MyMatrix.toutf8(ele)
-		end
-		super(arr)
-	end
-	def getHeaders
-		out = []
-		arr = super()
-		arr.each do |ele|
-			out << MyMatrix.tosjis(ele)
-		end
-		return out
-	end
-end
-
-
-#rails で使う場合。obsolete
-class MyRailsMatrix < MyMatrix
-	def headers2db(t)
-		getHeaders.each do |header|
-			t.column header, :string
-		end
-	end
-end
-
-
