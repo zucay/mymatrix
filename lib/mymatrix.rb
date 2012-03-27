@@ -1,17 +1,16 @@
 #!/usr/bin/ruby -Ku
 # -*- encoding: utf-8 -*-
-require "mymatrix/version"
-require 'loader_factory'
-
-
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-
+require "mymatrix/version"
 require 'rubygems'
 require 'nkf'
 require 'logger'
 require 'pp'
 require 'enumerable_ex' #verbose_each
+
+require 'loader_factory'
+
 
 if(RUBY_VERSION =~ /1\.[^9]/)
   $KCODE='UTF8'
@@ -42,7 +41,7 @@ class MyMatrix
 		@log.level = Logger::DEBUG
 		@file  = file
 		
-		@mx = []
+
     @mx = LoaderFactory.load(@file, opts)
 
 

@@ -64,6 +64,9 @@ describe MyMatrix do
   
   it 'XLSで表示されている通りの値がStringとして取得できること' do
     @mx = MyMatrix.new('spec/std_shoshiki.xls')
+    @mx[0][0].should == '標準書式での数値の扱い'
+    @mx[0][0].class.should == String
+    
     @mx[0][1].should == '1'
     @mx[0][1].class.should == String
     
@@ -97,6 +100,11 @@ describe MyMatrix do
     mx[1][2].should == 'aaa'
     
 		
+  end
+  it 'tsvファイルを読めること' do 
+    mx = MyMatrix.new('spec/jptest.txt')
+    mx.getHeaders[0].should == '日本語ヘッダ１'
+    mx[0][0].should == '値１value1'
   end
   
   it 'concatDirでフォルダ内ファイルを全て結合できること' do
