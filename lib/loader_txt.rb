@@ -20,6 +20,7 @@ class LoaderTxt < FileIO
 		end
 		opts[:sep]||="\t"
 		fi.each do |line|
+		  
 			row = MyMatrix.toutf8(line).chomp.split(/#{opts[:sep]}/)
 			#「1,300台」などカンマが使われている場合、「"1,300台"」となってしまうので、カンマを無視する
 			newRow = []

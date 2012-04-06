@@ -944,27 +944,31 @@ class MyMatrix
 	def self.cp932ize(str)
 		out = str.dup
 		cases = [
-			#['−', '―'], #MINUS SIGN(U+2212) to FULLWIDTH HYPHEN-MINUS(U+2015)(windows)
-			#↑仕様としては上記が正しいが、運用上MINUS SIGN(U+2212) は FULLWIDTH HYPHEN-MINUS(U+FF0D)に変換する
-			#キー入力時にMacとWindowsで同じ文字コードとなることが望ましいため。
-			
-			['〜','～'], #WAVE DASH (U+301C) to FULLWIDTH TILDE(U+FF5E)(windows)
-			['‖','∥'], #DOUBLE VERTICAL LINE (U+2016, "‖") を PARALLEL TO (U+2225, "∥") に
-			['—', '―'], #EM DASH (U+2014, "—") を HORIZONTAL BAR (U+2015, "―") に
-			#以下、キー入力を想定した変換。
-			['ー', 'ー'], #MacのハイフンF7(google ime)→Windows(googleime)：同じ
-			['ｰ', 'ｰ'], #MacのハイフンF8(google ime)→Windows(googleime)：同じ
-			['−', '－'], #MacのハイフンF9[−](google ime)→Windows[－](googleime)：違う。MINUS SIGN(U+2212) to FULLWIDTH HYPHEN-MINUS(U+FF0D)
-			['-', '-'], #MacのハイフンF10(google ime)→Windows(googleime)：同じ
-      #ユニコード固有文字:ノーブレークスペース
-      ['[\u00A0]', ' '],
-      #yen
-      ['[\u00A5]', '￥'],
-      # éとè:eの上に´と`
-      ['[\u00E9]', 'e'],['[\u00E8]', 'e'],
-      #spaces
-      ['[\u2000]', ' '],['[\u2001]', ' '],['[\u2002]', ' '],['[\u2003]', ' '],['[\u2004]', ' '],['[\u2005]', ' '],['[\u2006]', ' '],['[\u2007]', ' '],['[\u2008]', ' '],['[\u2009]', ' '],['[\u200A]', ' '],['[\u205F]', ' ']
-			]
+             #['−', '―'], #MINUS SIGN(U+2212) to FULLWIDTH HYPHEN-MINUS(U+2015)(windows)
+             #↑仕様としては上記が正しいが、運用上MINUS SIGN(U+2212) は FULLWIDTH HYPHEN-MINUS(U+FF0D)に変換する
+             #キー入力時にMacとWindowsで同じ文字コードとなることが望ましいため。
+             
+             ['〜','～'], #WAVE DASH (U+301C) to FULLWIDTH TILDE(U+FF5E)(windows)
+             ['‖','∥'], #DOUBLE VERTICAL LINE (U+2016, "‖") を PARALLEL TO (U+2225, "∥") に
+             ['—', '―'], #EM DASH (U+2014, "—") を HORIZONTAL BAR (U+2015, "―") に
+             #以下、キー入力を想定した変換。
+             ['ー', 'ー'], #MacのハイフンF7(google ime)→Windows(googleime)：同じ
+             ['ｰ', 'ｰ'], #MacのハイフンF8(google ime)→Windows(googleime)：同じ
+             ['−', '－'], #MacのハイフンF9[−](google ime)→Windows[－](googleime)：違う。MINUS SIGN(U+2212) to FULLWIDTH HYPHEN-MINUS(U+FF0D)
+             ['-', '-'], #MacのハイフンF10(google ime)→Windows(googleime)：同じ
+             #ユニコード固有文字:ノーブレークスペース
+             ['[\u00A0]', ' '],
+             #yen
+             ['[\u00A5]', '￥'],
+             # éとè:eの上に´と`
+             ['[\u00E9]', 'e'],['[\u00E8]', 'e'],
+             # todo:よく使う文字(http://www.geocities.jp/laut6/mojibakesetumei/mojibakesetumei2.html より)
+
+             #spaces
+             ['[\u2000]', ' '],['[\u2001]', ' '],['[\u2002]', ' '],['[\u2003]', ' '],['[\u2004]', ' '],['[\u2005]', ' '],['[\u2006]', ' '],['[\u2007]', ' '],['[\u2008]', ' '],['[\u2009]', ' '],['[\u200A]', ' '],['[\u205F]', ' ']
+            ]
+    
+    
 		cases.each do |c|
 			out.gsub!(/#{c[0]}/, c[1])
 		end
