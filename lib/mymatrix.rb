@@ -7,7 +7,7 @@ require 'rubygems'
 require 'nkf'
 require 'logger'
 require 'pp'
-require 'enumerable_ex' #verbose_each
+require 'exeach' #verbose_each
 
 require 'loader_factory'
 

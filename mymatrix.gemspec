@@ -20,5 +20,7 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
+  s.add_development_dependency "exeach"
+  s.add_development_dependency "spreadsheet"
   # s.add_runtime_dependency "rest-client"
 end
