@@ -61,7 +61,13 @@ class MyMatrix
 			out = NKF.nkf('-W -x -s --cp932', str)
 		else
       str = MyMatrix.cp932ize(str)
-			out = str.encode("Windows-31J")
+      begin
+        out = str.encode("Windows-31J")
+      rescue => e
+        p e
+        p str
+        out = str
+      end
 		end
 		return out
 	end
@@ -965,7 +971,13 @@ class MyMatrix
              # todo:よく使う文字(http://www.geocities.jp/laut6/mojibakesetumei/mojibakesetumei2.html より)
 
              #spaces
-             ['[\u2000]', ' '],['[\u2001]', ' '],['[\u2002]', ' '],['[\u2003]', ' '],['[\u2004]', ' '],['[\u2005]', ' '],['[\u2006]', ' '],['[\u2007]', ' '],['[\u2008]', ' '],['[\u2009]', ' '],['[\u200A]', ' '],['[\u205F]', ' ']
+             ['[\u2000]', ' '],['[\u2001]', ' '],['[\u2002]', ' '],['[\u2003]', ' '],['[\u2004]', ' '],['[\u2005]', ' '],['[\u2006]', ' '],['[\u2007]', ' '],['[\u2008]', ' '],['[\u2009]', ' '],['[\u200A]', ' '],['[\u205F]', ' '],
+             
+             #Japanese Addresses
+             ['鵢崎', 'みさ崎'],
+             ['繫', '繋'],
+             ['萊', '莱']
+
             ]
     
     
