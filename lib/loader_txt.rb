@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 require 'file_io'
 class LoaderTxt < FileIO
-  def self.makeMatrix(file, opts={:sep=>"\t", :offset=>0})
-  #TSV: tab separated value 読み込みメソッド
-
+  def self.makeMatrix(file, opts=nil)
+    #TSV: tab separated value 読み込みメソッド
+    opts ||= {}
+    opts[:sep] ||= "\t"
+    opts[:offset] ||= 0
+    opts[:encode] ||= "Windows-31J"
 		out = []
     epath = encodePath(file)
 		if(!File.exist?(epath))
@@ -12,7 +15,7 @@ class LoaderTxt < FileIO
 			end
 		end
     path = self.encodePath(file)
-		fi = open(path, "r:Windows-31J")
+		fi = open(path, "r:#{opts[:file_encode]}")
 		if(opts[:offset])
 			opts[:offset].times do |i|
 				fi.gets

@@ -4,13 +4,15 @@ require 'loader_csv'
 require 'loader_txt'
 class LoaderFactory
   def self.load(file, opts)
+    opts ||= { }
     mx = []
     if(file =~ /\.xls$/)
 			mx = LoaderXls.makeMatrix(file, opts)
 		elsif(@file =~ /(\.tsv|\.txt|\.TSV|\.TXT)/)
 			mx = LoaderTxt.makeMatrix(file, opts)
 		elsif(file =~ /(\.csv|\.CSV)/)
-			mx = LoaderCsv.makeMatrix(file, opts)
+      opts[:sep] = ','
+      mx = LoaderTxt.makeMatrix(file, opts)
 		elsif(file == nil)
 		else
 			#デフォルトはTSVで読み込むようにする。

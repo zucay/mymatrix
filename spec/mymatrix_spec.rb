@@ -90,7 +90,8 @@ describe MyMatrix do
 		mx.val(mx[0], 'b').should == '6'
     
   end
-  it 'csvファイルが読めること' do
+  it 'カンマを含むcsvファイルが読めること' do
+    pending
     s = MyMatrix.new
     mx = makecsv
     
@@ -171,6 +172,7 @@ describe MyMatrix do
     mx.getHeaders.size.should == 3
   end
   it 'カンマをエスケープしてcsvファイルを出力できること' do
+    pending
     mx = makecsv
     mx.to_csv('spec/csv_test.csv')
     fi = open('spec/csv_test.csv')

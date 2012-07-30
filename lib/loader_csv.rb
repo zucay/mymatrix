@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 require 'file_io'
 class LoaderCsv < FileIO
-  def self.makeMatrix(file, opts={:offset=>0})
+  def self.makeMatrix(file, opts=nil)
+    opts ||= {}
+    opts[:offset] ||= 0
+    opts[:encode] ||= 'Windows-31J'
+
   #CSV読み込みメソッド
 		#1.9系ではFasterCSVを使えない
 		if(RUBY_VERSION =~ /1\.[^9]/)
@@ -11,13 +15,14 @@ class LoaderCsv < FileIO
 		else
 			#1.9以上の場合
 			require 'csv'
-			Encoding.default_external = 'Windows-31J'
+			Encoding.default_external = opts[:encode]
 			csv = CSV
 		end
 		out = []
 		i= 0
 		syspath = self.encodePath(file)
-		csv.foreach(syspath, {:row_sep => "\r\n", :encoding => 'Shift_JIS'}) do |row|
+		csv.foreach(syspath, {:row_sep => "\r\n", :encoding => opts[:encode]}) do |row|
+      p row
 			if(opts[:offset])
 				if(opts[:offset] < i)
 					next
