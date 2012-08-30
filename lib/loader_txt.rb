@@ -15,7 +15,7 @@ class LoaderTxt < FileIO
 			end
 		end
     path = self.encodePath(file)
-		fi = open(path, "r:#{opts[:file_encode]}")
+		fi = open(path, "r:#{opts[:encode]}")
 		if(opts[:offset])
 			opts[:offset].times do |i|
 				fi.gets

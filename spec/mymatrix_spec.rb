@@ -99,8 +99,12 @@ describe MyMatrix do
     mx[1][0].should == 'ダブル"クオーテーション'
     mx[1][1].should == 'カン,マ'
     mx[1][2].should == 'aaa'
-    
-		
+  end
+  it 'UTF-8形式のcsvファイルが読めること' do
+    mx = makecsv_utf
+    mx[0][0].should == ''
+    mx[0][2].should == '大阪'
+    mx.val(mx[0], 'b').should == '奈良'
   end
   it 'tsvファイルを読めること' do 
     mx = MyMatrix.new('spec/jptest.txt')
@@ -336,6 +340,15 @@ def makecsv
     fo.write("\r\n")
   end
   mx = MyMatrix.new('spec/csv.csv')
+  return mx
+end
+def makecsv_utf
+  open('spec/csv.csv', 'w')  do |fo|
+    fo.write("a,b,c\r\n")
+    fo.write(',奈良,大阪')
+    fo.write("\r\n")
+  end
+  mx = MyMatrix.new('spec/csv.csv', :encode => 'utf-8')
   return mx
 end
 def makecsv_norow

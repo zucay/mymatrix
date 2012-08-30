@@ -15,14 +15,14 @@ class LoaderCsv < FileIO
 		else
 			#1.9以上の場合
 			require 'csv'
-			Encoding.default_external = opts[:encode]
+			#Encoding.default_external = opts[:encode]
 			csv = CSV
 		end
 		out = []
 		i= 0
 		syspath = self.encodePath(file)
-		csv.foreach(syspath, {:row_sep => "\r\n", :encoding => opts[:encode]}) do |row|
-      p row
+		#csv.foreach(syspath, {:row_sep => "\r\n", :encoding => opts[:encode]}) do |row|
+    csv.foreach(syspath, {:encoding => opts[:encode]}) do |row|
 			if(opts[:offset])
 				if(opts[:offset] < i)
 					next
@@ -33,7 +33,8 @@ class LoaderCsv < FileIO
 			row.each do |cell|
 				cell = cell.to_s
 				cell ||= ''
-				cell = MyMatrix.toutf8(cell)
+        p cell
+				#cell = MyMatrix.toutf8(cell)
 				#cell = cell.gsub(/^\"/, "")
 				#cell = cell.gsub(/\"$/, "")
 				#"
