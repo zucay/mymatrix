@@ -283,8 +283,11 @@ describe MyMatrix do
     Proc {
       mx.to_t('test.txt')
     }.should raise_error
- end
-
+  end
+  it 'ヘッダが半角でも対応できること' do
+    mx = makeHankakuSample
+    mx.val(mx[0], '削除ﾌﾗｸﾞ').should == '4'
+  end
 end
 def translationCheck(testcases)
   mx = MyMatrix.new
@@ -325,6 +328,14 @@ end
 def makeEmptySample
   out = MyMatrix.new()
   out.addHeaders(['a', 'b', 'c'])
+  out << ['4', '5', '8']
+  out << ['', '', '']
+  out << ['', '', '']
+  return out
+end
+def makeHankakuSample
+  out = MyMatrix.new()
+  out.addHeaders(['削除ﾌﾗｸﾞ', 'b', 'c'])
   out << ['4', '5', '8']
   out << ['', '', '']
   out << ['', '', '']

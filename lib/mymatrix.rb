@@ -478,7 +478,7 @@ class MyMatrix
 	end
 
   #CSV出力する。ダブルクオーテーションやカンマをエスケープする。
-	def to_csv(outFile)
+	def to_csv(outFile=nil)
 		to_t(outFile, {:separator=>',', :escape=>true})
 	end
   
@@ -748,7 +748,7 @@ class MyMatrix
 		out = 0
 		arr = getColumn(header)
 		arr.each do |ele|
-			if(ele =~ /#{value}/)
+			if(ele == value)
 				out += 1
 			end
 		end
