@@ -369,3 +369,13 @@ def makecsv_norow
   mx = MyMatrix.new('spec/csv.csv')
   return mx
 end
+
+
+if(__FILE__ == $0)
+  p ARGV[0]
+  mx = MyMatrix.new(ARGV[0])
+  p mx.getHeaders.join("\t")
+  mx.each do |row|
+    p row.join("\t")
+  end
+end
