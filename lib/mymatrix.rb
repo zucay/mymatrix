@@ -39,8 +39,11 @@ class MyMatrix
 			retry
 		end
 		@log.level = Logger::DEBUG
-		@file  = file
-		
+    if(FileIO.filesystem == 's')
+      @file  = file.toutf8
+    else
+      @file  = file
+		end
 
     @mx = LoaderFactory.load(@file, opts)
 
