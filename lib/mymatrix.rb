@@ -40,7 +40,7 @@ class MyMatrix
 		end
 		@log.level = Logger::DEBUG
     if(FileIO.filesystem == 's')
-      @file  = file.toutf8
+      @file  = MyMatrix.toutf8(file.to_s)
     else
       @file  = file
 		end
