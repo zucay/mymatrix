@@ -48,12 +48,14 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 == HOW TO USE:
-## load and wright file
+load and wright file
+--------------------
+
 ```ruby
 require 'mymatrix'
 mx = MyMatrix.new('path/to/xlsfile.xls')
 mx.each_with_index do |row, i|
-	the_column = 'sample_column_name'
+  the_column = 'sample_column_name'
 
 	# print value of the cell.
   p mx.val(row, the_column) 
