@@ -136,10 +136,21 @@ describe MyMatrix do
     pending('必要になったら実装する')
     mx = makeSample()
     mx.to_xls({:template => 'spec/template.xls', :out=>'spec/out.xls', :offset_r => 3, :offset_c =>1})
+
     mx = MyMatrix.new('spec/out.xls')
     mx.val(mx[0], 'P-a').should == 'iti'
     mx[3][1].should == 'a'
     mx[4][1].should == '4'
+  end
+  it 'xls形式で書き出せること' do 
+    mx = MyMatrix.new('spec/template.xls')
+    mx.setValue(mx[0], 'P-b', 'foo')
+
+    mx.to_xls('spec/out.xls')
+
+    mx = MyMatrix.new('spec/out.xls')
+    mx.val(mx[0], 'P-a').should == 'iti'
+    mx.val(mx[0], 'P-b').should == 'foo'
   end
   it '同じシーケンスIDに同一の値をsetできること' do
     mx = MyMatrix.new()

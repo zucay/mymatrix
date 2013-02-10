@@ -410,7 +410,7 @@ class MyMatrix
 		end
 		fo.close
 	end
-  # テキスト出力する
+  # テキスト出力する。outFileにxlsが指定された場合は、xls出力する。
 	def to_t(outFile=nil, opts={})
 		if(!outFile)
 			outFile = @file
@@ -423,8 +423,8 @@ class MyMatrix
 			opts[:separator] ||= ','
 			opts[:escape] ||= true
 		when '.xls'
-			p 'use Tab-Separated-Value text format.'
-			outFile = outFile + '.txt'
+      to_xls(outFile)
+      return
 		when '.xlsx'
 			p 'use Tab-Separated-Value text format.'
 			outFile = outFile + '.txt'
@@ -481,10 +481,45 @@ class MyMatrix
 	end
 
   #CSV出力する。ダブルクオーテーションやカンマをエスケープする。
-	def to_csv(outFile=nil)
-		to_t(outFile, {:separator=>',', :escape=>true})
+	def to_csv(outFile=nil, opts={ })
+		to_t(outFile, opts.merge({:separator=>',', :escape=>true}))
 	end
-  
+
+  #xlsにて出力する。
+	def to_xls(outFile=nil, opts={ })
+    default_sheet_name = 'Sheet1'
+		if(outFile =~ /.xls$/)
+		else
+			raise "output file is not xls. set .xls file"
+		end
+
+    infile =opts[:template]
+    inFile ||= self.file
+
+    begin
+      xl = Spreadsheet.open(inFile)
+      sheet_str = opts[:sheet]
+      sheet_str ||= default_sheet_name
+      sheet = xl.worksheet(sheet_str)
+    rescue
+      xl = Spreadsheet::Workbook.new
+      sheet = book.create_worksheet
+      sheet.name = default_sheet_name
+    end
+
+		@headers.each_with_index do |head, i|
+			sheet[0, i] = head
+		end
+		self.each_with_index do |row, i|
+      n = i+1 # line number
+			row.each_with_index do |cell, j|
+				sheet[n, j] = cell
+			end
+		end
+		xl.write(outFile)
+	end
+
+
   #ヘッダのコピーを返却する
 	def getHeaders
 		out = @headers.dup
@@ -1034,7 +1069,7 @@ class MyMatrix
 	end
   #num文字以上の項目をnum文字に丸める
   def cutOff(head, num)
-    self.each do |row|      
+    self.each do |row|
       v = self.val(row, head)
       if(v =~ /(.{#{num}})/)
         self.setValue(row, head, $1)
@@ -1051,4 +1086,9 @@ class MyMatrix
 		basename = File.basename(path, ".*")
 		opath = (FileIO.encodePath("#{dir}/#{basename}_#{postfix}#{ext}"))
   end
+end
+
+if(__FILE__ == $0)
+  mx = MyMatrix.new('/Users/zuka/Dropbox/lib/mymatrix/spec/std_shoshiki.xls')
+  mx.to_xls('hoge.xls')
 end
