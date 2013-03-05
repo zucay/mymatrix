@@ -32,7 +32,7 @@ describe MyMatrix do
   end
 =begin
   it 'sortされること' do
-    @mx = MyMatrix.new('spec/110619.xls')
+    @mx = MyMatrix.new('spnc/110619.xls')
     @mx = @mx.sortBy('要確認').reverse
     @mx.each do |row|
       #p @mx.val(row, '要確認')
