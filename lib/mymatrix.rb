@@ -954,7 +954,7 @@ class MyMatrix
 		self.each do |row|
 			self.getHeaders.each do |head|
 				val = self.val(row, head)
-				if(val =~ /(.*)[　 ]$/)
+				if(val =~ /(.*)[　 ]+$/)
 					self.setValue(row, head, $1)
 				end
 			end
