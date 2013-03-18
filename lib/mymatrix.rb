@@ -178,13 +178,13 @@ class MyMatrix
 		end
 		return out
 	end
-	def val(row, str)
+	def val(row, str, offset=0)
 		getValue(row, str)
 	end
 	
-	def getValue(row, str)
+	def getValue(row, str offset=0)
 		out = nil
-		index = @headerH[str]
+		index = @headerH[str] + offset
 		if(index)
 			out = row[index]
 			#お尻のセルでNULLの場合などは、nilが返却されてしまう。なので、''となるようにする。
@@ -214,25 +214,23 @@ class MyMatrix
 
 =end
 
-	def setValue(row, str, value)
+	def setValue(row, str, value, offset=0)
 		if(!row)
 			raise 'row is nil'
 		end
-		index = @headerH[str]
-		if(!index)
-			addHeaders([str])
-		end
+		@headerH[str] ||= addHeaders([str])
+		index = @headerH[str] + offset
 		#参照先の値も変更できるように、破壊メソッドを使う。row[@headerH[str]] = valueでは、参照先が切り替わってしまうので、値の置き換えにならない。
 		#findなどで取得したrowに対して処理を行う際に必要な変更。
-		if(row[@headerH[str]].class == String)
-			row[@headerH[str]].sub!(/^.*$/, value)
+		if(row[index].class == String)
+			row[inxex].sub!(/^.*$/, value)
 		else
 			#raise('not string error.')
 			#todo 強烈なバグな気もするが、例外を回避し値を代入2010年12月15日
 			begin
-				row[@headerH[str]] = value.to_s
+				row[index] = value.to_s
 			rescue
-				row[@headerH[str]] = ''
+				row[index] = ''
 			end
 		end
 	end
