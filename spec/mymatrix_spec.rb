@@ -299,6 +299,14 @@ describe MyMatrix do
     mx = makeHankakuSample
     mx.val(mx[0], '削除ﾌﾗｸﾞ').should == '4'
   end
+
+  it 'to_tのオプション:remove_empty_row をtrueにすると、空行を出力しないこと' do
+    output_mx = makeEmptySample
+    output_mx.to_t('test.txt', {:remove_empty_row => true })
+    mx = MyMatrix.new('test.txt')
+    mx.size.should == 1
+  end
+
 end
 def translationCheck(testcases)
   mx = MyMatrix.new
