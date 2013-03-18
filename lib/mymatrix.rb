@@ -177,12 +177,8 @@ class MyMatrix
 			out.addColumn(colName, col)
 		end
 		return out
-	end
-	def val(row, str, offset=0)
-		getValue(row, str)
-	end
-	
-	def getValue(row, str offset=0)
+	end	
+	def getValue(row, str, offset = 0)
 		out = nil
 		index = @headerH[str] + offset
 		if(index)
@@ -214,7 +210,7 @@ class MyMatrix
 
 =end
 
-	def setValue(row, str, value, offset=0)
+	def setValue(row, str, value, offset = 0)
 		if(!row)
 			raise 'row is nil'
 		end
@@ -223,7 +219,7 @@ class MyMatrix
 		#参照先の値も変更できるように、破壊メソッドを使う。row[@headerH[str]] = valueでは、参照先が切り替わってしまうので、値の置き換えにならない。
 		#findなどで取得したrowに対して処理を行う際に必要な変更。
 		if(row[index].class == String)
-			row[inxex].sub!(/^.*$/, value)
+			row[index].sub!(/^.*$/, value)
 		else
 			#raise('not string error.')
 			#todo 強烈なバグな気もするが、例外を回避し値を代入2010年12月15日
@@ -409,6 +405,12 @@ class MyMatrix
 		fo.close
 	end
   # テキスト出力する。outFileにxlsが指定された場合は、xls出力する。
+  # デフォルトではタブ区切りテキスト。outFileの拡張子を.csvにした場合はカンマ区切りテキスト。
+  # optsに設定できる値：
+  # :enc => 文字コード。'u':UTF-8, 's':Shift_JISのみ設定可能。デフォルトはShift_JIS(CP932)
+  # :separator => テキスト出力するときのセパレータ。
+  # :escape => エスケープするか
+  # :remove_empty_row => 空行を削除するか。デフォルトfalse(空行を出力する)
 	def to_t(outFile=nil, opts={})
 		if(!outFile)
 			outFile = @file
@@ -445,7 +447,10 @@ class MyMatrix
    				orow << cell.to_s.gsub(/[#{opts[:separator]}\r\n]/, '')
         end
 			end
-			
+      if(opts[:remove_empty_row])
+        empty_row = Array.new(row.size, '')
+        orow = orow - [empty_row]
+      end
 			begin
 				str = localEncode(orow.join(opts[:separator]), opts[:enc])
 			rescue Encoding::UndefinedConversionError
