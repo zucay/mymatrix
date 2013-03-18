@@ -398,7 +398,11 @@ class MyMatrix
 				fo.print("")
 			else 
 				str = yield(row)
-				fo.print(str)
+        if(str)
+          fo.print(str)
+        else
+          next
+        end
 			end
 			fo.print("\r\n")
 		end
@@ -447,12 +451,10 @@ class MyMatrix
    				orow << cell.to_s.gsub(/[#{opts[:separator]}\r\n]/, '')
         end
 			end
-      if(opts[:remove_empty_row])
-        empty_row = Array.new(row.size, '')
-        orow = orow - [empty_row]
-      end
+
+      str = orow.join(opts[:separator])
 			begin
-				str = localEncode(orow.join(opts[:separator]), opts[:enc])
+				out_str = localEncode(str, opts[:enc])
 			rescue Encoding::UndefinedConversionError
         orow.each do |ele|
           begin
@@ -464,7 +466,14 @@ class MyMatrix
 
 				@log.debug(row.join(opts[:separator]))
 			end
-			str
+      if(opts[:remove_empty_row])
+        empty_str = localEncode(Array.new(row.size, '').join(opts[:separator]),opts[:enc])
+
+        if(empty_str == out_str)
+          out_str = nil
+        end
+      end
+			out_str
 		end
 	end
 	def myescape(cell)

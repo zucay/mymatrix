@@ -292,7 +292,7 @@ describe MyMatrix do
     mx.addHeaders(['str'])
     mx << ['盌']
     Proc {
-      mx.to_t('test.txt')
+      mx.to_t('spec/test.txt')
     }.should raise_error
   end
   it 'ヘッダが半角でも対応できること' do
@@ -302,9 +302,9 @@ describe MyMatrix do
 
   it 'to_tのオプション:remove_empty_row をtrueにすると、空行を出力しないこと' do
     output_mx = makeEmptySample
-    output_mx.to_t('test.txt', {:remove_empty_row => true })
-    mx = MyMatrix.new('test.txt')
-    mx.size.should == 1
+    output_mx.to_t('spec/test.txt', {:remove_empty_row => true })
+    fi = File.open('spec/test.txt')
+    fi.count.should == 2
   end
 
 end
@@ -348,6 +348,7 @@ def makeEmptySample
   out = MyMatrix.new()
   out.addHeaders(['a', 'b', 'c'])
   out << ['4', '5', '8']
+  out << ['', '', '']
   out << ['', '', '']
   out << ['', '', '']
   return out
