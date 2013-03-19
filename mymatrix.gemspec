@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "mymatrix/version"
+require 'rake'
 
 Gem::Specification.new do |s|
   s.name        = "mymatrix"
@@ -13,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "mymatrix"
 
-  s.files         = `git ls-files`.split("\n")
+  s.files         = FileList['lib/**/*.rb', 'bin/*', '[A-Z]*', 'spec/**/*'].to_a
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
