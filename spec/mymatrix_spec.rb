@@ -9,7 +9,8 @@ describe MyMatrix do
       Encoding.default_external = 'Windows-31J'
     end
   end
-  
+  after :all do
+  end
   it '４行と4行のデータをconcatFileで結合すると8行になること' do
     @mx = MyMatrix.new('spec/line4.xls')
     @mx.concatFile('spec/line4.xls')
@@ -151,6 +152,7 @@ describe MyMatrix do
     mx = MyMatrix.new('spec/out.xls')
     mx.val(mx[0], 'P-a').should == 'iti'
     mx.val(mx[0], 'P-b').should == 'foo'
+    File.delete('spec/out.xls')
   end
   it '同じシーケンスIDに同一の値をsetできること' do
     mx = MyMatrix.new()
@@ -305,6 +307,8 @@ describe MyMatrix do
     output_mx.to_t('spec/test.txt', {:remove_empty_row => true })
     fi = File.open('spec/test.txt')
     fi.count.should == 2
+    fi.close
+    File.delete('spec/test.txt')
   end
 
 end
@@ -323,6 +327,7 @@ def translationCheck(testcases)
   testcases.each_with_index do |mycase, i|
     mx[i][0].should == mycase[1]
   end
+  File.delete('spec/test.txt')
 end
 
 def makeSample
