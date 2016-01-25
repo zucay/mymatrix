@@ -16,7 +16,7 @@ Support filetypes: .xls, .tsv, .csv
 == REQUIREMENTS:
 
 Support ruby versions are:
-ruby 1.8.7, 
+ruby 1.8.7,
 ruby 1.9.2 or higher
 
 == INSTALL:
@@ -48,7 +48,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 == HOW TO USE:
-load and wright file
+read and write file
 --------------------
 
 ```ruby
@@ -58,11 +58,11 @@ mx.each_with_index do |row, i|
   the_column = 'sample_column_name'
 
 	# print value of the cell.
-  p mx.val(row, the_column) 
+  p mx.val(row, the_column)
 
-	# write value of the cell	
+	# write value of the cell
 	mx.setValue(row, the_column, i) # write "i" value to the cell
-	
+
 	# text_output(default is csv)
 	mx.to_t('path/to/text.txt')
 	# csv_output
