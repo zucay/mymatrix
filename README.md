@@ -5,7 +5,7 @@
 mymatrix is a handling library for MS Excel and  csv/tsv text.
 
 ## FEATURES/PROBLEMS:
-Support filetypes: .xls, .tsv, .csv
+Support filetypes: .xls, .tsv, .csv / 
 .xlsx is not supported.
 
 ## REQUIREMENTS:
