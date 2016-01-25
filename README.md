@@ -5,7 +5,7 @@
 mymatrix is a handling library for MS Excel and  csv/tsv text.
 
 ## FEATURES/PROBLEMS:
-Support filetypes: .xls, .tsv, .csv / 
+Support filetypes: .xls, .tsv, .csv /
 .xlsx is not supported.
 
 ## REQUIREMENTS:
@@ -32,7 +32,7 @@ mx.each_with_index do |row, i|
 	# write value of the cell
 	mx.setValue(row, the_column, i) # write "i" value to the cell
 
-	# text_output(default is csv)
+	# text_output(default is tsv:tab separated values)
 	mx.to_t('path/to/text.txt')
 	# csv_output
 	mx.to_csv('path/to/csv.csv')
