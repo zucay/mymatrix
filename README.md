@@ -26,16 +26,16 @@ mx = MyMatrix.new('path/to/xlsfile.xls')
 mx.each_with_index do |row, i|
   the_column = 'sample_column_name'
 
-	# print value of the cell.
+  # print value of the cell.
   p mx.val(row, the_column)
 
-	# write value of the cell
-	mx.setValue(row, the_column, i) # write "i" value to the cell
+  # write value of the cell
+  mx.setValue(row, the_column, i) # write "i" value to the cell
 
-	# text_output(default is tsv:tab separated values)
-	mx.to_t('path/to/text.txt')
-	# csv_output
-	mx.to_csv('path/to/csv.csv')
+  # text_output(default is tsv:tab separated values)
+  mx.to_t('path/to/text.txt')
+  # csv_output
+  mx.to_csv('path/to/csv.csv')
 end
 ```
 
